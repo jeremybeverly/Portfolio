@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title ?? "Jeremy's Portofolio" }}</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-neutral-50 text-neutral-900 font-sans">
 <div class="flex flex-col min-h-screen">
@@ -20,10 +21,18 @@
                 <a href="{{ route('portfolio.designs') }}" class="hover:text-neutral-950 transition-colors duration-200">Other Works</a>
             </nav>
             <div class="w-24 flex justify-end">
+                @auth
                 <a href="{{ route('projects.index') }}"
                    class="bg-neutral-900 hover:bg-neutral-800 text-white text-xs px-3 py-1.5 rounded-full transition-colors duration-200 shadow-sm font-normal tracking-wide">
                     Dashboard
                 </a>
+                @endauth
+                    @guest
+                        <a href="{{ route('login') }}"
+                           class="bg-white border border-neutral-200 text-neutral-900 hover:bg-neutral-50 text-xs px-3 py-1.5 rounded-full transition-colors duration-200 shadow-sm font-medium tracking-wide">
+                            Sign In
+                        </a>
+                    @endguest
             </div>
         </div>
     </header>
@@ -49,5 +58,8 @@
     </footer>
 
 </div>
+<script>
+    lucide.createIcons();
+</script>
 </body>
 </html>

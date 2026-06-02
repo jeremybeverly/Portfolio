@@ -1,8 +1,7 @@
 <x-layouts.app title="Manage Design Works">
-    <div class="flex justify-between items-center mb-10">
+    <div class="flex justify-between items-center my-8">
         <div class="flex flex-col gap-1">
-            <h1 class="text-4xl font-extrabold tracking-tight text-neutral-950">Manage Design Works</h1>
-            <p class="text-sm text-neutral-500">Add, view, edit, or delete your UI/UX and graphic design compositions.</p>
+            <h1 class="text-4xl font-bold tracking-tight text-neutral-950">Manage Design Works.</h1>
         </div>
         <a href="{{ route('designs.create') }}" class="bg-neutral-900 text-white text-sm font-medium px-5 py-2.5 rounded-xl hover:bg-neutral-800 transition shadow-sm tracking-wide">
             Add New Design Work

@@ -51,7 +51,8 @@ class ProjectController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'project_type_id' => 'required|exists:project_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
         if ($request->hasFile('image')) {
@@ -65,13 +66,15 @@ class ProjectController extends Controller
             'project_type_id' => $validated['project_type_id']
         ]);
 
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $file) {
-                $path = $file->store('projects/gallery', 'public');
-                $project->images()->create([
-                    'image_path' => $path,
-                    'caption' => null,
-                ]);
+        if ($request->has('gallery')) {
+            foreach ($request->input('gallery') as $index => $galleryData) {
+                if ($request->hasFile("gallery.{$index}.file")) {
+                    $path = $request->file("gallery.{$index}.file")->store('projects/gallery', 'public');
+                    $project->images()->create([
+                        'image_path' => $path,
+                        'caption' => $galleryData['caption'] ?? null,
+                    ]);
+                }
             }
         }
 
@@ -108,7 +111,8 @@ class ProjectController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'project_type_id' => 'required|exists:project_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
         if ($request->hasFile('image')) {

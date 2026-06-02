@@ -45,7 +45,8 @@ class DesignWorkController extends Controller
             'cover_image' => 'required|image|max:2048',
             'design_work_type_id' => 'required|exists:design_work_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
         if ($request->hasFile('cover_image')) {
@@ -102,7 +103,8 @@ class DesignWorkController extends Controller
             'cover_image' => 'nullable|image|max:2048',
             'design_work_type_id' => 'required|exists:design_work_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
         // Handle cover image update
