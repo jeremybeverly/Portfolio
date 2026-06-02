@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('design_work_types', function (Blueprint $table) { // Changed table name from 'design_works_types' to 'design_work_types'
             $table->id();
-            $table->foreignId('project_type_id')->constrained();
             $table->string('name');
-            $table->string('description');
-            $table->string('image');
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('design_work_types'); // Changed table name from 'design_works_types' to 'design_work_types'
     }
 };

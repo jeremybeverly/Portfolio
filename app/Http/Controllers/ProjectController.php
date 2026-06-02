@@ -36,7 +36,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        $projectTypes = ProjectType::all(); // Fetch all project types
+        $projectTypes = ProjectType::all();
         return view('projects.form', compact('projectTypes'));
     }
 
@@ -50,25 +50,28 @@ class ProjectController extends Controller
             'description' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'project_type_id' => 'required|exists:project_types,id',
+            'gallery' => 'nullable|array',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('images', 'public');
         }
 
-        $project = Project::create($validated);
+        $project = Project::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'image' => $validated['image'],
+            'project_type_id' => $validated['project_type_id']
+        ]);
 
-        if ($request->has('gallery')) {
-            foreach ($request->input('gallery') as $index => $galleryData) {
-                if ($request->hasFile("gallery.{$index}.file")) {
-                    $file = $request->file("gallery.{$index}.file");
-                    $path = $file->store('gallery', 'public');
-
-                    $project->images()->create([
-                        'image_path' => $path,
-                        'caption' => $galleryData['caption'] ?? null,
-                    ]);
-                }
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                $path = $file->store('projects/gallery', 'public');
+                $project->images()->create([
+                    'image_path' => $path,
+                    'caption' => null,
+                ]);
             }
         }
 
@@ -99,23 +102,49 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        $rules = [
-            'name' => ['required', 'string', 'max:255', Rule::unique('projects')->ignore($project->id)],
-            'description' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'project_type_id' => 'required|exists:project_types,id', // Add validation for project_type_id
-        ];
-
-        $validated = $request->validate($rules);
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'project_type_id' => 'required|exists:project_types,id',
+            'gallery' => 'nullable|array',
+            'gallery.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
 
         if ($request->hasFile('image')) {
             if ($project->image) {
                 Storage::disk('public')->delete($project->image);
             }
-            $validated['image'] = $request->file('image')->store('images', 'public');
+            $validated['image'] = $request->file('image')->store('projects', 'public');
         }
 
-        $project->update($validated);
+        $project->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'project_type_id' => $validated['project_type_id'],
+            'image' => $validated['image'] ?? $project->image,
+        ]);
+
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                $path = $file->store('projects/gallery', 'public');
+                $project->images()->create([
+                    'image_path' => $path,
+                    'caption' => null,
+                ]);
+            }
+        }
+
+        if ($request->has('delete_gallery_images')) {
+            foreach ($request->input('delete_gallery_images') as $imageId) {
+                $projectImage = $project->images()->find($imageId);
+                if ($projectImage) {
+                    Storage::disk('public')->delete($projectImage->image_path);
+                    $projectImage->delete();
+                }
+            }
+        }
+
         return redirect()->route('projects.index');
     }
 
@@ -127,6 +156,11 @@ class ProjectController extends Controller
         if ($project->image) {
             Storage::disk('public')->delete($project->image);
         }
+
+        foreach ($project->images as $img) {
+            Storage::disk('public')->delete($img->image_path);
+        }
+
         $project->delete();
         return redirect()->route('projects.index');
     }

@@ -2,23 +2,60 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ $title ?? "Dashboard" }}</title>
+    <title>{{ $title ?? "Admin Dashboard" }}</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-neutral-50 text-neutral-900 font-sans">
-<div class="grid grid-cols-[260px_1fr] min-h-screen">
-    <aside class="flex flex-col gap-2 bg-white p-6 border-r border-neutral-200/60">
-        <div class="pt-4 pb-10 text-2xl font-bold text-neutral-950">Portofolio Admin</div>
-        <nav class="flex flex-col gap-2">
-            <a href="/" class="px-4 py-2 rounded-lg hover:bg-neutral-100 transition text-neutral-700 hover:text-neutral-900">Back to Portfolio</a>
-            <a href="{{route('projects.index')}}" class="px-4 py-2 rounded-lg bg-neutral-100 text-neutral-900 font-medium">Manage Projects</a>
+<body class="bg-neutral-50 text-neutral-900 font-sans antialiased">
+<div class="flex min-h-screen">
+
+    <aside class="w-64 bg-white border-r border-neutral-200/60 flex flex-col hidden md:flex shrink-0 shadow-sm z-10">
+        <div class="p-6">
+            <h1 class="text-xl font-extrabold text-neutral-950 tracking-tight">Portfolio Admin</h1>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+            <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100 transition group">
+                <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                View Live Site
+            </a>
+
+            <div class="pt-6 pb-2">
+                <p class="px-3 text-xs font-bold tracking-wider text-neutral-400 uppercase">Workspace</p>
+            </div>
+
+            <a href="{{ route('projects.index') }}"
+               class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('projects.*') ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100' }}">
+                Development Projects
+            </a>
+
+            <a href="{{ route('designs.index') }}"
+               class="flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition {{ request()->routeIs('designs.*') ? 'bg-neutral-900 text-white shadow-sm' : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-100' }}">
+                Creative Designs
+            </a>
         </nav>
+
+        <div class="p-4 border-t border-neutral-200/60 bg-neutral-50/50">
+            <div class="flex items-center gap-3 px-3 py-2">
+                <div class="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600 shadow-sm border border-neutral-300/50">
+                    {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
+                </div>
+                <div class="text-sm">
+                    <p class="font-bold text-neutral-900">{{ auth()->user()->name ?? 'Admin User' }}</p>
+                    <p class="text-xs text-neutral-500">Administrator</p>
+                </div>
+            </div>
+        </div>
     </aside>
-    <main class="p-8"> {{$slot}}</main>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8">
+            {{ $slot }}
+        </div>
+    </main>
+
 </div>
 </body>
 </html>

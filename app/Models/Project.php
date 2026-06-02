@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    use HasFactory; // Use HasFactory
+    use HasFactory;
 
     protected $fillable = [
         'name',
         'description',
-        'image',
-        'project_type_id', // Add project_type_id to fillable
+        'project_type_id',
+        'image'
     ];
 
     /**

@@ -15,8 +15,6 @@ class ProjectTypeSeeder extends Seeder
     {
         ProjectType::create(['name' => 'Web Development']);
         ProjectType::create(['name' => 'Mobile App Development']);
-        ProjectType::create(['name' => 'UI/UX Design']);
-        ProjectType::create(['name' => 'Game Development']);
         ProjectType::create(['name' => 'Data Science']);
     }
 }
