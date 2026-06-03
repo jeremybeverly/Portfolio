@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\ProjectType; // Import ProjectType model
+use App\Models\ProjectType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -46,12 +46,12 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:projects,name',
             'description' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'project_type_id' => 'required|exists:project_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
@@ -106,12 +106,12 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'name' => ['required','max:255', Rule::unique('projects', 'name')->ignore($project)],
             'description' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'project_type_id' => 'required|exists:project_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 

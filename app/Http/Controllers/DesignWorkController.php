@@ -22,7 +22,7 @@ class DesignWorkController extends Controller
     public function portfolio()
     {
         $works = DesignWork::latest()->get();
-        return view('designWorks', compact('works')); // Corrected: return view and pass data
+        return view('designWorks', compact('works'));
     }
 
     /**
@@ -40,12 +40,12 @@ class DesignWorkController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'name' => 'required|max:255|unique:design_works,name',
             'description' => 'required|string',
-            'cover_image' => 'required|image|max:2048',
+            'cover_image' => 'required|image|max:4096',
             'design_work_type_id' => 'required|exists:design_work_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
@@ -77,37 +77,40 @@ class DesignWorkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DesignWork $designWork) // Changed $design to $designWork
+    public function show(DesignWork $designWork)
     {
         $designWork->load('images', 'designWorkType');
-        return view('designs.show', compact('designWork')); // Changed compact('design') to compact('designWork')
+        return view('designs.show', compact('designWork'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DesignWork $designWork) // Changed $design to $designWork
+    public function edit(DesignWork $designWork)
     {
         $designWorkTypes = DesignWorkType::all();
-        return view('designs.form', compact('designWork', 'designWorkTypes')); // Changed ['designWork' => $design] to compact('designWork', 'designWorkTypes')
+        return view('designs.form', compact('designWork', 'designWorkTypes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DesignWork $designWork) // Changed $design to $designWork
+    public function update(Request $request, DesignWork $designWork)
     {
         $validated = $request->validate([
-            'name' => 'required|max:255',
+            'name' => [
+                'required',
+                'max:255',
+                Rule::unique('design_works', 'name')->ignore($designWork->id)
+            ],
             'description' => 'required|string',
-            'cover_image' => 'nullable|image|max:2048',
+            'cover_image' => 'nullable|image|max:4096',
             'design_work_type_id' => 'required|exists:design_work_types,id',
             'gallery' => 'nullable|array',
-            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Explicitly check the 'file' key
+            'gallery.*.file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'gallery.*.caption' => 'nullable|string|max:255'
         ]);
 
-        // Handle cover image update
         if ($request->hasFile('cover_image')) {
             if ($designWork->cover_image) {
                 Storage::disk('public')->delete($designWork->cover_image);
@@ -133,7 +136,6 @@ class DesignWorkController extends Controller
             }
         }
 
-        // Handle updates to existing gallery image captions
         if ($request->has('existing_gallery_images')) {
             foreach ($request->input('existing_gallery_images') as $imageId => $imageData) {
                 $designWorkImage = $designWork->images()->find($imageId); // Changed $design->images to $designWork->images
@@ -159,13 +161,13 @@ class DesignWorkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DesignWork $designWork) // Changed $design to $designWork
+    public function destroy(DesignWork $designWork)
     {
-        if ($designWork->cover_image) { // Changed $design->cover_image to $designWork->cover_image
+        if ($designWork->cover_image) {
             Storage::disk('public')->delete($designWork->cover_image);
         }
 
-        foreach ($designWork->images as $img) { // Changed $design->images to $designWork->images
+        foreach ($designWork->images as $img) {
             Storage::disk('public')->delete($img->image_path);
         }
 

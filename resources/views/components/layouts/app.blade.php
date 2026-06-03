@@ -19,8 +19,7 @@
 
         <nav class="flex-1 flex flex-col px-4 pb-4 space-y-1.5 overflow-y-auto">
             <a href="/" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100 transition group">
-                <svg class="w-4 h-4 text-neutral-400 group-hover:text-neutral-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                View Live Site
+                &larr;  View Live Site
             </a>
 
 
@@ -45,18 +44,6 @@
                 </button>
             </form>
         </nav>
-
-        <div class="p-4 border-t border-neutral-200/60 bg-neutral-50/50">
-            <div class="flex items-center gap-3 px-3 py-2">
-                <div class="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600 shadow-sm border border-neutral-300/50">
-                    {{ substr(auth()->user()->name ?? 'A', 0, 1) }}
-                </div>
-                <div class="text-sm">
-                    <p class="font-bold text-neutral-900">{{ auth()->user()->name ?? 'Admin User' }}</p>
-                    <p class="text-xs text-neutral-500">Administrator</p>
-                </div>
-            </div>
-        </div>
     </aside>
 
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden">

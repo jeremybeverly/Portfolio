@@ -34,10 +34,6 @@
                 </div>
 
                 <div class="px-6 pb-6 pt-2 flex gap-2">
-                    <a href="{{ route('portfolio.designs.show', $work) }}" target="_blank" class="flex-1 text-center bg-white border border-neutral-200 text-neutral-700 font-medium px-3 py-2 rounded-xl hover:bg-neutral-50 hover:text-neutral-950 transition text-sm shadow-xs">
-                        Preview
-                    </a>
-
                     <a href="{{ route('designs.edit', $work) }}" class="flex-1 text-center bg-neutral-100 border border-neutral-200 text-neutral-800 font-medium px-3 py-2 rounded-xl hover:bg-neutral-200 hover:text-neutral-950 transition text-sm shadow-xs">
                         Edit
                     </a>

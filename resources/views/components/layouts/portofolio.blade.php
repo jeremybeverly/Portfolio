@@ -16,15 +16,24 @@
         <div class="max-w-5xl mx-auto h-14 px-6 flex justify-between items-center text-sm font-medium">
             <div class="w-24"></div>
             <nav class="flex gap-8 items-center text-neutral-500">
-                <a href="/" class="hover:text-neutral-950 transition-colors duration-200">Home</a>
-                <a href="{{ route('portfolio.projects') }}" class="hover:text-neutral-950 transition-colors duration-200">My Projects</a>
-                <a href="{{ route('portfolio.designs') }}" class="hover:text-neutral-950 transition-colors duration-200">Other Works</a>
+                <a href="/"
+                   class="transition-colors duration-200 {{ request()->is('/') ? 'text-neutral-950 font-semibold' : 'text-neutral-500 hover:text-neutral-950' }}">
+                    Home
+                </a>
+                <a href="{{ route('portfolio.projects') }}"
+                   class="transition-colors duration-200 {{ request()->routeIs('portfolio.projects*') ? 'text-neutral-950 font-semibold' : 'text-neutral-500 hover:text-neutral-950' }}">
+                    My Projects
+                </a>
+                <a href="{{ route('portfolio.designs') }}"
+                   class="transition-colors duration-200 {{ request()->routeIs('portfolio.designs*') ? 'text-neutral-950 font-semibold' : 'text-neutral-500 hover:text-neutral-950' }}">
+                    Other Works
+                </a>
             </nav>
             <div class="w-24 flex justify-end">
                 @auth
                 <a href="{{ route('projects.index') }}"
                    class="bg-neutral-900 hover:bg-neutral-800 text-white text-xs px-3 py-1.5 rounded-full transition-colors duration-200 shadow-sm font-normal tracking-wide">
-                    Dashboard
+                    Customize
                 </a>
                 @endauth
                     @guest
@@ -44,14 +53,14 @@
     <footer class="bg-neutral-50 border-t border-neutral-200/60 pt-8 pb-12 mt-12">
         <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center md:items-start gap-4 text-xs text-neutral-500">
 
-            <p>Copyright &copy; {{ date('Y') }} Jeremy Beverly. All rights reserved.</p>
+            <p>Copyright &copy; {{ date('Y') }} Sang Sigma Sejati. All rights reserved.</p>
 
             <div class="flex gap-6 font-medium">
                 <a href="#" class="hover:text-neutral-900 transition-colors duration-200">GitHub</a>
                 <div class="w-px h-3 bg-neutral-300 self-center hidden md:block"></div>
                 <a href="#" class="hover:text-neutral-900 transition-colors duration-200">LinkedIn</a>
                 <div class="w-px h-3 bg-neutral-300 self-center hidden md:block"></div>
-                <a href="mailto:your.email@example.com" class="hover:text-neutral-900 transition-colors duration-200">Contact</a>
+                <a href="#" class="hover:text-neutral-900 transition-colors duration-200">Contact</a>
             </div>
 
         </div>
